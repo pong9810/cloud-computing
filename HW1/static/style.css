@@ -1,0 +1,425 @@
+﻿:root {
+  /* 全站主要配色與陰影變數。 */
+  --bg: #f6efe6;
+  --surface: rgba(255, 252, 248, 0.92);
+  --surface-strong: #fff8f0;
+  --ink: #2c1a12;
+  --muted: #72594b;
+  --line: rgba(91, 55, 34, 0.12);
+  --accent: #bc5a45;
+  --accent-deep: #8f3d2b;
+  --accent-soft: #f0cdb8;
+  --success: #2e7d5b;
+  --danger: #b23a31;
+  --shadow: 0 18px 40px rgba(82, 45, 21, 0.14);
+}
+
+* {
+  /* 讓所有元素的寬高計算方式一致。 */
+  box-sizing: border-box;
+}
+
+body {
+  /* 設定整體字體、文字顏色與背景漸層。 */
+  margin: 0;
+  color: var(--ink);
+  font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255, 214, 170, 0.85), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(188, 90, 69, 0.18), transparent 26%),
+    linear-gradient(135deg, #f7efe3 0%, #f2e4d5 48%, #efe2d8 100%);
+}
+
+button,
+input {
+  /* 表單元件統一使用同一套字體。 */
+  font: inherit;
+}
+
+button {
+  /* 主要按鈕的外觀設定。 */
+  border: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff9f5;
+  cursor: pointer;
+  padding: 0.82rem 1.1rem;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+}
+
+button:hover {
+  /* 滑鼠移入時做輕微浮起效果。 */
+  transform: translateY(-1px);
+  background: var(--accent-deep);
+}
+
+input {
+  /* 輸入框基礎樣式。 */
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.page-shell {
+  /* 控制整個頁面的最大寬度與左右留白。 */
+  width: min(1440px, calc(100% - 20px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.hero {
+  /* 首頁最上方的介紹區塊。 */
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 24px;
+  padding: 28px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(255, 248, 240, 0.95), rgba(250, 227, 208, 0.9));
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  /* 標題上方的小型英文標籤。 */
+  margin: 0 0 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  font-size: 0.82rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  /* 先把預設上方間距拿掉，方便自訂版面。 */
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.hero-copy {
+  /* 控制首頁說明文字的寬度與行距。 */
+  max-width: 680px;
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.hero-badge {
+  /* 右上角顯示目前資料來源的小卡片。 */
+  min-width: 210px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(188, 90, 69, 0.16);
+}
+
+.hero-badge span,
+.hero-badge strong {
+  display: block;
+}
+
+.hero-badge span {
+  margin-bottom: 8px;
+  color: var(--muted);
+}
+
+.dashboard-grid {
+  /* 主內容使用 12 欄網格來安排卡片位置。 */
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.card {
+  /* 每個功能區塊共用的卡片樣式。 */
+  grid-column: span 4;
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+}
+
+.card-wide {
+  /* 較寬的卡片預設占 8 欄。 */
+  grid-column: span 8;
+}
+
+.compact-card {
+  /* 這張卡片依內容高度顯示，不和同列其他卡片撐成一樣高。 */
+  align-self: start;
+}
+
+.table-card {
+  /* 需要橫跨整排時使用，這裡拿來給摘要區。 */
+  grid-column: 1 / -1;
+}
+
+.section-head {
+  margin-bottom: 18px;
+}
+
+.section-head p {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.stack-form,
+.employee-form-grid {
+  /* 表單區內部使用 grid 排列欄位。 */
+  display: grid;
+  gap: 12px;
+}
+
+.inline-form {
+  /* 查詢區採用輸入框 + 按鈕並排。 */
+  grid-template-columns: 1fr auto;
+}
+
+.status-text {
+  /* 成功或提示訊息的預設顏色。 */
+  min-height: 24px;
+  margin: 12px 0 0;
+  color: var(--success);
+}
+
+.error-text {
+  /* 發生錯誤時改成紅色提示。 */
+  color: var(--danger);
+}
+
+.summary-grid {
+  /* 員工總數、總薪資、平均薪資三格並排。 */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.metric-box,
+.highlight-box,
+.result-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+}
+
+.metric-box span,
+.highlight-box span {
+  /* 小標籤文字用較淡的顏色。 */
+  display: block;
+  color: var(--muted);
+}
+
+.metric-box strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.8rem;
+}
+
+.report-grid {
+  /* 部門統計、最高薪、最低薪的三欄配置。 */
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-list {
+  /* 部門薪資列表不使用預設項目符號。 */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detail-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--line);
+}
+
+.detail-list li + li {
+  margin-top: 10px;
+}
+
+.highlight-box strong,
+.highlight-box b {
+  display: block;
+}
+
+.highlight-box b {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: var(--accent-deep);
+}
+
+.employee-form-grid {
+  /* 新增/編輯表單預設為兩欄排列。 */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-actions {
+  /* 表單送出按鈕列橫跨整個表單寬度。 */
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+}
+
+.ghost-button {
+  /* 次要按鈕採用透明底色。 */
+  background: transparent;
+  color: var(--accent-deep);
+  border: 1px solid rgba(188, 90, 69, 0.3);
+}
+
+.undo-button {
+  /* 復原按鈕獨立顯示在表單下方。 */
+  margin-top: 10px;
+}
+
+.table-head {
+  /* 表格標題與右側按鈕並排。 */
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+}
+
+.table-tools {
+  /* 表格區右上角的排序與操作工具列。 */
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sort-label {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.sort-select {
+  border: 1px solid rgba(188, 90, 69, 0.2);
+  border-radius: 14px;
+  padding: 0.76rem 0.95rem;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+}
+
+.table-wrap {
+  /* 表格太寬時允許橫向捲動。 */
+  overflow-x: auto;
+}
+
+table {
+  /* 表格寬度撐滿卡片，並保留最小寬度避免欄位擠壓。 */
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1100px;
+}
+
+th,
+td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+th {
+  /* 表頭顏色與背景和資料列做出區隔。 */
+  color: var(--muted);
+  font-weight: 600;
+  background: rgba(255, 248, 240, 0.85);
+}
+
+.salary-cell {
+  /* 個人薪資欄位用較醒目的字重與顏色。 */
+  font-weight: 700;
+  color: var(--accent-deep);
+}
+
+.action-group {
+  /* 編輯與刪除按鈕並排顯示。 */
+  display: flex;
+  gap: 8px;
+}
+
+.table-button {
+  padding: 0.58rem 0.8rem;
+  border-radius: 12px;
+}
+
+.delete-button {
+  /* 刪除按鈕使用較偏紅的色彩。 */
+  background: #cb6959;
+}
+
+.search-result {
+  /* 查詢結果使用卡片式直向排列。 */
+  display: grid;
+  gap: 12px;
+}
+
+.result-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.result-card strong,
+.result-salary {
+  display: block;
+}
+
+.result-card span {
+  color: var(--muted);
+}
+
+.empty-state,
+.empty-row,
+.empty-list {
+  /* 沒有資料時統一用較淡顏色顯示。 */
+  color: var(--muted);
+}
+
+@media (max-width: 980px) {
+  /* 手機或窄螢幕時全部改成單欄，避免版面擠壓。 */
+  .card,
+  .card-wide {
+    grid-column: 1 / -1;
+  }
+
+  .hero,
+  .table-head,
+  .result-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-tools {
+    width: 100%;
+  }
+
+  .summary-grid,
+  .report-grid,
+  .employee-form-grid,
+  .inline-form {
+    grid-template-columns: 1fr;
+  }
+}

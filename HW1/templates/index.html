@@ -1,0 +1,168 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>薪資管理 MVP</title>
+    <!-- 載入網站樣式 -->
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <!-- 頁首說明區：專案名稱與目前資料來源 -->
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Salary Web MVP</p>
+          <h1>Excel 薪資管理系統</h1>
+          <p class="hero-copy">
+            上傳 Excel、查詢員工、計算薪資、查看全體報表，整理成一個可以直接展示的 Flask 單頁系統。
+          </p>
+        </div>
+        <div class="hero-badge">
+          <span id="data-source-label">目前資料來源</span>
+          <strong>data/salary.xlsx</strong>
+        </div>
+      </header>
+
+      <main class="dashboard-grid">
+        <!-- Excel 上傳區 -->
+        <section class="card">
+          <div class="section-head">
+            <h2>Excel 上傳區</h2>
+            <p>支援 `salary` 工作表，欄位需符合薪資格式。</p>
+          </div>
+          <form id="upload-form" class="stack-form">
+            <input id="excel-file" name="file" type="file" accept=".xlsx,.xls" />
+            <button type="submit">上傳 Excel</button>
+          </form>
+          <p id="upload-message" class="status-text"></p>
+        </section>
+
+        <!-- 員工查詢區 -->
+        <section class="card compact-card">
+          <div class="section-head">
+            <h2>員工查詢區</h2>
+            <p>可依員工編號或姓名查詢個人薪資。</p>
+          </div>
+          <form id="search-form" class="stack-form inline-form">
+            <input id="search-keyword" type="text" placeholder="例如：E001 或 王小明" />
+            <button type="submit">查詢員工</button>
+          </form>
+          <div id="search-result" class="search-result empty-state">尚未查詢員工資料</div>
+        </section>
+
+        <!-- 全體薪資摘要區 -->
+        <section class="card card-wide table-card">
+          <div class="section-head">
+            <h2>全體薪資摘要區</h2>
+            <p>快速查看總薪資、平均薪資、部門合計與最高最低薪。</p>
+          </div>
+          <div class="summary-grid">
+            <article class="metric-box">
+              <span>員工總數</span>
+              <strong id="employee-count">0</strong>
+            </article>
+            <article class="metric-box">
+              <span>總薪資</span>
+              <strong id="total-salary">NT$0</strong>
+            </article>
+            <article class="metric-box">
+              <span>平均薪資</span>
+              <strong id="average-salary">NT$0</strong>
+            </article>
+          </div>
+          <div class="report-grid">
+            <div>
+              <h3>各部門總薪資</h3>
+              <ul id="department-list" class="detail-list"></ul>
+            </div>
+            <div>
+              <h3>最高薪員工</h3>
+              <div id="highest-paid" class="highlight-box">尚無資料</div>
+            </div>
+            <div>
+              <h3>最低薪員工</h3>
+              <div id="lowest-paid" class="highlight-box">尚無資料</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 員工新增 / 編輯表單 -->
+        <section class="card">
+          <div class="section-head">
+            <h2>員工資料維護</h2>
+            <p>可新增員工，或點選表格中的編輯按鈕修改資料。</p>
+          </div>
+          <form id="employee-form" class="employee-form-grid">
+            <input id="emp-id" name="員工編號" type="text" placeholder="員工編號" required />
+            <input id="emp-name" name="姓名" type="text" placeholder="姓名" required />
+            <input id="emp-department" name="部門" type="text" placeholder="部門" required />
+            <input id="class-hours" name="補習班時數" type="number" min="0" step="1" placeholder="補習班時數" />
+            <input id="class-rate" name="補習班時薪" type="number" min="0" step="1" placeholder="補習班時薪" />
+            <input id="tutor-hours" name="家教時數" type="number" min="0" step="1" placeholder="家教時數" />
+            <input id="tutor-rate" name="家教時薪" type="number" min="0" step="1" placeholder="家教時薪" />
+            <input id="trip-days" name="出差天數" type="number" min="0" step="1" placeholder="出差天數" />
+            <input id="trip-allowance" name="出差津貼" type="number" min="0" step="1" placeholder="出差津貼" />
+            <input id="bonus" name="獎金" type="number" min="0" step="1" placeholder="獎金" />
+            <input id="deduction" name="扣款" type="number" min="0" step="1" placeholder="扣款" />
+            <div class="form-actions">
+              <button id="submit-employee" type="submit">新增員工</button>
+              <button id="cancel-edit" type="button" class="ghost-button" hidden>取消編輯</button>
+            </div>
+          </form>
+          <p id="form-message" class="status-text"></p>
+          <button id="undo-delete" type="button" class="ghost-button undo-button" hidden>復原上一筆刪除</button>
+        </section>
+
+        <!-- 員工完整資料表格區 -->
+        <section class="card card-wide">
+          <div class="section-head table-head">
+            <div>
+              <h2>員工資料表格區</h2>
+              <p>顯示全部資料與個人薪資，可直接進行編輯與刪除。</p>
+            </div>
+            <div class="table-tools">
+              <label class="sort-label" for="sort-select">排序</label>
+              <select id="sort-select" class="sort-select">
+                <option value="employee-asc">員工編號：小到大</option>
+                <option value="employee-desc">員工編號：大到小</option>
+                <option value="salary-desc">個人薪資：高到低</option>
+                <option value="salary-asc">個人薪資：低到高</option>
+              </select>
+              <button id="refresh-btn" type="button" class="ghost-button">重新整理</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>員工編號</th>
+                  <th>姓名</th>
+                  <th>部門</th>
+                  <th>補習班時數</th>
+                  <th>補習班時薪</th>
+                  <th>家教時數</th>
+                  <th>家教時薪</th>
+                  <th>出差天數</th>
+                  <th>出差津貼</th>
+                  <th>獎金</th>
+                  <th>扣款</th>
+                  <th>個人薪資</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="employee-table-body">
+                <tr>
+                  <td colspan="13" class="empty-row">讀取中...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- 載入前端互動邏輯 -->
+    <script src="/static/script.js"></script>
+  </body>
+</html>
